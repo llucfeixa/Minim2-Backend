@@ -1,9 +1,6 @@
 package edu.upc.dsa.domain;
 
-import edu.upc.dsa.domain.entity.Characters;
-import edu.upc.dsa.domain.entity.MyObjects;
-import edu.upc.dsa.domain.entity.ObjectType;
-import edu.upc.dsa.domain.entity.User;
+import edu.upc.dsa.domain.entity.*;
 import edu.upc.dsa.domain.entity.exceptions.NotEnoughCoinsException;
 import edu.upc.dsa.domain.entity.exceptions.UserAlreadyExistsException;
 import edu.upc.dsa.domain.entity.vo.Credentials;
@@ -39,4 +36,10 @@ public interface GameManager {
     public Characters getCharacter(String characterId);
     public void deleteCharacter(String characterId);
     public double getCoinsCharacter(String characterId);
+
+    /**Partida*/
+    public List<Partida> getPartidas();
+    public List<Partida> getPartidasByPoints();
+    public int numPartidas();
+    public void addPartida(String email, String date, int points, String avatar);
 }

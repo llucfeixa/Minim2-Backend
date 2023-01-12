@@ -1,10 +1,8 @@
 package edu.upc.dsa.infraestructure;
 
 import edu.upc.dsa.domain.GameManager;
-import edu.upc.dsa.domain.entity.Characters;
-import edu.upc.dsa.domain.entity.MyObjects;
-import edu.upc.dsa.domain.entity.ObjectType;
-import edu.upc.dsa.domain.entity.User;
+import edu.upc.dsa.domain.entity.*;
+import edu.upc.dsa.domain.entity.comparators.PartidaComparatorByPoints;
 import edu.upc.dsa.domain.entity.exceptions.NotEnoughCoinsException;
 import edu.upc.dsa.domain.entity.exceptions.UserAlreadyExistsException;
 import edu.upc.dsa.domain.entity.vo.Credentials;
@@ -18,12 +16,18 @@ import java.util.List;
 
 public class GameManagerDBImpl implements GameManager {
     Session session;
+    ArrayList<Partida> partidas;
     private static GameManager instance;
 
     final static Logger logger = Logger.getLogger(GameManagerDBImpl.class);
 
     public GameManagerDBImpl(){
-        this.session = FactorySession.openSession("jdbc:mariadb://localhost:3306/dsa","root", "Mazinger72");
+        this.session = FactorySession.openSession("jdbc:mariadb://localhost:3306/dsa","user1", "password1");
+        partidas = new ArrayList<>();
+        addPartida("llucfeixa@gmail.com", "29/12/2001", 50, "https://www.gameart2d.com/uploads/3/0/9/1/30917885/redhatboy-free-sprites_orig.png");
+        addPartida("llucfeixa2@gmail.com", "29/12/2002", 20, "https://www.gameart2d.com/uploads/3/0/9/1/30917885/boy-free-sprite_orig.jpg");
+        addPartida("llucfeixa3@gmail.com", "29/12/2000", 70, "https://www.gameart2d.com/uploads/3/0/9/1/30917885/free-dino-sprites_orig.jpg");
+        addPartida("llucfeixa4@gmail.com", "29/12/2003", 40, "https://www.gameart2d.com/uploads/3/0/9/1/30917885/santa-claus-sprite.jpg?678");
     }
 
     public static GameManager getInstance() {
@@ -254,6 +258,33 @@ public class GameManagerDBImpl implements GameManager {
         }
         logger.info("The Character is not in the Store");
         return coins;
+    }
+
+    @Override
+    public List<Partida> getPartidas() {
+        logger.info("All Partidas returned");
+        return partidas;
+    }
+
+    @Override
+    public List<Partida> getPartidasByPoints() {
+        List<Partida> partidasByPoints = new ArrayList<>(partidas);
+        partidasByPoints.sort(new PartidaComparatorByPoints());
+        logger.info("Partidas ordered by points");
+        return partidasByPoints;
+    }
+
+    @Override
+    public int numPartidas() {
+        logger.info("Partidas size is " + partidas.size());
+        return partidas.size();
+    }
+
+    @Override
+    public void addPartida(String email, String date, int points, String avatar) {
+        Partida partida = new Partida(email, date, points, avatar);
+        logger.info("Partida created with information: Email: " + email + ", Date: " + date + ", Points: " + points);
+        partidas.add(partida);
     }
 
     @Override
